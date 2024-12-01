@@ -6,6 +6,11 @@ use \Exception as Exception;
 use \PDO as PDO;
 use \DateTime;
 
+/**
+ * Class Animaux
+ * 
+ * Class used to interact with the animaux table in the database
+ */
 class Animaux extends Database
 {
     private int $id = 0;
@@ -21,33 +26,56 @@ class Animaux extends Database
         $this->created_at = new DateTime();
     }
 
-    // Getters
+    /**
+     * Get the id of the animal
+     * @return int
+     */
     public function getId(): int
     {
         return $this->id;
     }
 
+    /**
+     * Get the name of the animal
+     * @return string
+     */
     public function getNom(): string
     {
         return $this->nom;
     }
 
+    /**
+     * Get the description of the animal
+     * @return string
+     */
     public function getDescription(): string
     {
         return $this->description;
     }
 
+    /**
+     * Get the id of the species of the animal
+     * @return int
+     */
     public function getEspeceId(): int
     {
         return $this->espece_id;
     }
 
+    /**
+     * Get the id of the enclosure of the animal
+     * @return int
+     */
     public function getEnclosId(): int
     {
         return $this->enclos_id;
     }
 
-    // Setters
+    /**
+     * Set the name of the animal
+     * @param string $nom
+     * @return $this
+     */
     public function setName($nom)
     {
         if (empty($nom)) throw new Exception('Le nom est requis');
@@ -57,6 +85,11 @@ class Animaux extends Database
         return $this;
     }
 
+    /**
+     * Set the description of the animal
+     * @param string $description
+     * @return $this
+     */
     public function setDescription($description)
     {
         if (empty($description)) throw new Exception('La description est requise');
@@ -66,6 +99,11 @@ class Animaux extends Database
         return $this;
     }
 
+    /**
+     * Set the id of the species of the animal
+     * @param int $espece_id
+     * @return $this
+     */
     public function setEspece($espece_id)
     {
         if (empty($espece_id)) throw new Exception("L'espèce est requise");
@@ -74,6 +112,11 @@ class Animaux extends Database
         return $this;
     }
 
+    /**
+     * Set the id of the enclosure of the animal
+     * @param int $enclos_id
+     * @return $this
+     */
     public function setEnclosId($enclos_id)
     {
         if (empty($enclos_id)) throw new Exception("L'enclos est requis");
@@ -82,7 +125,10 @@ class Animaux extends Database
         return $this;
     }
 
-    // Database operations
+    /**
+     * Add a new animal to the database
+     * @return bool
+     */
     public function add(): bool
     {
         $query = "INSERT INTO animaux (nom, description, espece_id, enclos_id, created_at) 
@@ -99,6 +145,11 @@ class Animaux extends Database
         ]);
     }
 
+    /**
+     * Get all animals from a specific enclosure
+     * @param int $enclosId
+     * @return array
+     */
     public function getByEnclosId($enclosId)
     {
         $query = "SELECT animaux.*, especes.nom as espece_nom 
@@ -113,6 +164,11 @@ class Animaux extends Database
         return $stmt->fetchAll(PDO::FETCH_OBJ);
     }
 
+    /**
+     * Set the id of the species of the animal
+     * @param int $espece_id
+     * @return $this
+     */
     public function setEspeceId($espece_id)
     {
         if (empty($espece_id)) {
@@ -125,6 +181,11 @@ class Animaux extends Database
         return $this;
     }
 
+    /**
+     * Delete an animal from the database
+     * @param int $id
+     * @return bool
+     */
     public function delete($id): bool
     {
         $query = "DELETE FROM animaux WHERE id = :id";
@@ -132,6 +193,11 @@ class Animaux extends Database
         return $stmt->execute([':id' => $id]);
     }
 
+    /**
+     * Update an animal in the database
+     * @param int $id
+     * @return bool
+     */
     public function update($id): bool
     {
         $query = "UPDATE animaux 
@@ -152,6 +218,11 @@ class Animaux extends Database
         ]);
     }
 
+    /**
+     * Get the animal with the given id
+     * @param int $id
+     * @return object
+     */
     public function getById($id)
     {
         $query = "SELECT animaux.*, especes.nom as espece_nom 
@@ -166,3 +237,4 @@ class Animaux extends Database
         return $stmt->fetch(PDO::FETCH_OBJ);
     }
 }
+
