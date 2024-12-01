@@ -26,5 +26,15 @@ A PHP web application for managing a zoo's enclosures and animals. This project 
 - PDO for database operations
 - MVC Architecture
 
-## Project Structure
+## Acknowledgements
+
+- Project created as part of web development training
+- Uses Tailwind CSS for styling
+- Implements MVC architecture pattern
+
+## Author
+
+- Oujid Karim
+
+
 
