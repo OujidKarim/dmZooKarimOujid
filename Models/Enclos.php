@@ -1,33 +1,39 @@
 <?php
-
 namespace Models;
 
 use \Exception as Exception;
 use \PDO as PDO;
+use \DateTime as DateTime;
 
 class Enclos extends Database
 {
-    private int $id;
-    private string $nom;
-    private string $description;
-    private string $created_at;
+    private int $id = 0; // Initialize with default value
+    private string $nom = ''; // Initialize with default value
+    private string $description = ''; // Initialize with default value
+    private DateTime $created_at;
 
-    public function getId()
-    {
+    public function __construct() {
+        parent::__construct();
+        $this->created_at = new DateTime(); // Initialize DateTime
+    }
+
+    public function getId() {
         return $this->id;
     }
 
-    public function setId($id)
-    {
-        if (empty($id)) throw new Exception('L\'id de l\'enclos est obligatoire');
-        if (!is_numeric($id)) throw new Exception('L\'id de l\'enclos doit être un entier');
+    public function setId($id) {
+        if (empty($id)) throw new Exception("L'id est requis");
+        if (!is_numeric($id)) throw new Exception("L'id de l'enclos doit être un nombre");
         $floatVal = floatval($id);
-        $id = intval($id);
-        if ($id != $floatVal) throw new Exception('L\'id de l\'enclos doit être un entier');
-        if ($id <= 0) throw new Exception('L\'id de l\'enclos doit être supérieur à 0');
-
-        $this->id = $id;
+        if ($id != $floatVal) throw new Exception("L'id de l'enclos doit être un nombre entier");
+        if ($id < 0) throw new Exception("L'id de l'enclos ne peut pas être négatif");
+        
+        $this->id = intval($id);
+        return $this;
     }
+
+    // ... rest of your methods ...
+
 
     public function getName()
     {
@@ -86,13 +92,44 @@ class Enclos extends Database
 
     public function create()
     {
-        $query = "INSERT INTO `enclos` (`nom`, `description`, `created_at`) VALUES (:nom, :description, :created_at)";
-
+        $this->created_at = new DateTime(); // Set it just before creating
+        
+        $query = "INSERT INTO enclos (nom, description, created_at) 
+                  VALUES (:nom, :description, :created_at)";
+        
         $stmt = $this->db->prepare($query);
-        $stmt->bindValue(':nom', $this->nom);
-        $stmt->bindValue(':description', $this->description);
-        $stmt->bindValue(':created_at', $this->created_at);
-
+        $stmt->bindValue(':nom', $this->nom, PDO::PARAM_STR);
+        $stmt->bindValue(':description', $this->description, PDO::PARAM_STR);
+        $stmt->bindValue(':created_at', $this->created_at->format('Y-m-d H:i:s'), PDO::PARAM_STR);
+        
         return $stmt->execute();
     }
+
+    public function delete($id) {
+        $query = "DELETE FROM enclos WHERE id = :id";
+        $stmt = $this->db->prepare($query);
+        return $stmt->execute(['id' => $id]);
+    }
+    
+    public function getAnimals($enclosId) {
+        $query = "SELECT * FROM animaux WHERE enclos_id = :enclos_id";
+        $stmt = $this->db->prepare($query);
+        $stmt->execute(['enclos_id' => $enclosId]);
+        return $stmt->fetchAll(\PDO::FETCH_OBJ);
+    }
+    
+    public function getById($id) {
+        $query = "SELECT * FROM enclos WHERE id = :id";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue(':id', $id, \PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetch(\PDO::FETCH_OBJ);
+    }
+    
+
+    
+    
 }
+
+
+

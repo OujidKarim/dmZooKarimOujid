@@ -11,10 +11,15 @@ switch ($_SERVER['REDIRECT_URL']) {
     case '/addEnclos':
         require 'controllers/addEnclosCtrl.php';
         break;
-    
+
     case '/checkEnclos':
         require 'controllers/checkEnclosCtrl.php';
         break;
+        
+    case '/deleteEnclos':
+        require 'controllers/deleteEnclosCtrl.php';
+        break;
+
 
     default:
         require 'views/404.php';
