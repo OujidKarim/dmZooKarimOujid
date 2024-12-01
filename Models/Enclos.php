@@ -126,6 +126,20 @@ class Enclos extends Database
         return $stmt->fetch(\PDO::FETCH_OBJ);
     }
     
+    public function update($id, $nom, $description) {
+        $query = "UPDATE enclos 
+                  SET nom = :nom, 
+                      description = :description 
+                  WHERE id = :id";
+                  
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+        $stmt->bindValue(':nom', $nom, PDO::PARAM_STR);
+        $stmt->bindValue(':description', $description, PDO::PARAM_STR);
+        
+        return $stmt->execute();
+    }
+    
 
     
     
